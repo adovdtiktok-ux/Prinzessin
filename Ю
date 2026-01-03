@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Эффект сердца</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: black;
+    color: white;
+    font-family: 'Arial', sans-serif;
+  }
+  #canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  #text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    font-size: 2em;
+    top: 50%;
+    color: #ff4d6d;
+    opacity: 0;
+  }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="text">Я люблю тебя моя принцесса ❤️</div>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;// ---------------- Хаотичный пролист для "взлома" let hackPhase = true; function hackScreen() { ctx.fillStyle = 'black'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.fillStyle = 'lime'; ctx.font = '20px monospace'; for(let i=0; i<200; i++){ const x = Math.random()*canvas.width; const y = Math.random()*canvas.height; ctx.fillText(Math.random()<0.5?'0':'1', x, y); } }
+
+setTimeout(()=>{ hackPhase=false; startHeart(); }, 2000); // через 2 сек начнется сердце
+
+// ---------------- Сердце из частиц const particles = []; const particleCount = 500; function createParticles(){ for(let i=0;i<particleCount;i++){ particles.push({ x: canvas.width/2, y: canvas.height/2, angle: Math.random()Math.PI2, radius: Math.random()*150+50, size: Math.random()*3+1, phase: Math.random()Math.PI2 }); } }
+
+function drawHeart(){ ctx.clearRect(0,0,canvas.width,canvas.height); for(let p of particles){ // формула сердечка const t = Date.now()/1000; const scale = 1 + 0.1Math.sin(t3); // пульс const x = canvas.width/2 + scale16Math.pow(Math.sin(p.angle),3)p.radius; const y = canvas.height/2 - scale(13Math.cos(p.angle)-5Math.cos(2p.angle)-2Math.cos(3p.angle)-Math.cos(4p.angle))p.radius; ctx.fillStyle = 'red'; ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI2); ctx.fill(); } }
+
+function startHeart(){ createParticles(); requestAnimationFrame(animate); }
+
+function animate(){ drawHeart(); requestAnimationFrame(animate); }
+
+// ---------------- Текст собирающийся из частиц setTimeout(()=>{ document.getElementById('text').style.transition='opacity 3s'; document.getElementById('text').style.opacity=1; }, 5000); // через 5 секунд текст появляется
+
+// ---------------- Анимация взлома до начала сердца function hackLoop(){ if(hackPhase){ hackScreen(); requestAnimationFrame(hackLoop); } } hackLoop(); </script>
+
+</body>
+</html>
